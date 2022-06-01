@@ -1,6 +1,5 @@
 package com.adj.amgmt.entity;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -41,7 +40,6 @@ public class User {
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
 
-//	@Column(name = "user_role", nullable = false)
 	@OneToMany(fetch = FetchType.EAGER, cascade =  CascadeType.ALL)
 	@JoinTable(name = "user_and_role",joinColumns = @JoinColumn(name="username") ,inverseJoinColumns = @JoinColumn(name="userRoleId"))
 	private Set<UserRole> userRole;

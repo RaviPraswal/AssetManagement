@@ -36,7 +36,7 @@ public class ApplicationConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 
 		http.authorizeHttpRequests().antMatchers("/admin/**").hasRole("ADMIN").antMatchers("/").permitAll().and()
-				.formLogin().loginPage("/login").and().logout().logoutUrl("/logout").permitAll();
+				.formLogin().loginPage("/login").defaultSuccessUrl("/admin/").and().logout().logoutUrl("/logout").permitAll();
 		http.csrf().disable();
 	}
 

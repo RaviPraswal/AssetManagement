@@ -139,7 +139,7 @@
 							<hr>
 							<!-- Modal footer -->
 							<div class="model-footer">
-								<a href="../home/accessory_issues_view"
+								<a href="../admin/accessory_issues_view"
 									class="btn btn-secondary " style="font-size: 1vw;">Close</a>
 
 								<button type="submit" class="btn btn-primary"
