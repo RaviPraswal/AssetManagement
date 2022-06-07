@@ -1,15 +1,19 @@
 package com.adj.amgmt.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.adj.amgmt.dto.AccessoryDTO;
 import com.adj.amgmt.dto.AccessoryIssueDTO;
+import com.adj.amgmt.entity.Accessory;
 import com.adj.amgmt.entity.AccessoryIssue;
 import com.adj.amgmt.repository.AccessoryIssueRepository;
+import com.adj.amgmt.repository.AccessoryRepository;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -21,6 +25,9 @@ public class AccessoryIssueServiceImpl implements AccessoryIssueService {
 
 	@Autowired
 	AccessoryIssueRepository accessoryIssueRepository;
+
+	@Autowired
+	AccessoryRepository accessoryRepository;
 
 	@Autowired
 	ModelMapper modelMapper;
@@ -35,9 +42,26 @@ public class AccessoryIssueServiceImpl implements AccessoryIssueService {
 		return accessoryIssueListDTO;
 	}
 
-	public void saveAccessoryIssue(AccessoryIssueDTO accessoryIssueDTO) {
-		AccessoryIssue accessoryIssue = modelMapper.map(accessoryIssueDTO, AccessoryIssue.class);
-		accessoryIssueRepository.saveAndFlush(accessoryIssue);
+	public boolean saveAccessoryIssue(AccessoryIssueDTO accessoryIssueDTO) {
+
+		try {
+			AccessoryIssue accessoryIssue = modelMapper.map(accessoryIssueDTO, AccessoryIssue.class);
+			AccessoryDTO accessory = accessoryIssueDTO.getAccessory();// accessory from form
+			Optional<Accessory> accessoryById = accessoryRepository.findById(accessory.getId());// accessory from DB
+			if (accessoryIssueDTO.getIssueQuantity() > accessoryById.get().getPurchaseQuantity()) {
+				return false;
+			} else if (accessoryIssueDTO.getIssueQuantity() <= accessoryById.get().getPurchaseQuantity()) {
+				accessoryIssueRepository.saveAndFlush(accessoryIssue);
+				accessoryById.get().setPurchaseQuantity(
+						(accessoryById.get().getPurchaseQuantity() - accessoryIssueDTO.getIssueQuantity()));
+				accessoryRepository.save(accessoryById.get());
+				return true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+
 	}
 
 	public void deleteAccessoryIssueById(int id) {

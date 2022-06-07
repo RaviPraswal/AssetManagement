@@ -2,9 +2,6 @@ package com.adj.amgmt.dto;
 
 import org.hibernate.validator.constraints.NotBlank;
 
-import com.adj.amgmt.entity.Asset;
-import com.adj.amgmt.entity.Employee;
-
 import lombok.Data;
 
 @Data
@@ -12,9 +9,9 @@ public class AssetAssignmentDTO {
 
 	private int id;
 	
-	private Asset asset;	
+	private AssetDTO asset;	
 
-	private Employee employee;
+	private EmployeeDTO employee;
 
 	@NotBlank
 	private String issueDate;

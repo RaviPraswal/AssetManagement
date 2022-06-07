@@ -1,26 +1,36 @@
 package com.adj.amgmt.controller;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Base64;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
 
 @Controller
 public class LoginController {
 
-	// it should be the home page
+	// it should be the home page(first landing page)
 	@RequestMapping("/")
 	public String login() {
 		return "login";
 	}
 
 	@RequestMapping("/login")
-	public String getloginPage() {
+	public String loginView() {
+		return "login";
+	}
+
+	@RequestMapping("/authFail")
+	public String wrongCredentials(Model model) {
+		model.addAttribute("wrongCredentials", "Invalid User Details");
 		return "login";
 	}
 
@@ -35,9 +45,13 @@ public class LoginController {
 	 * "/login"; }
 	 */
 
-//	@RequestMapping(value = "/error")
-//	public String errorPage() {
-//		return "error";
+	// ---------------------------------------------------------------------------------------------------------
+//
+//	@GetMapping("/book/{id}")
+//	public String getBook(@PathVariable Integer id, Model model) {
+//		Book book = bookService.getBook(id);
+//		model.addAttribute("bookName", book.getBookName());
+//		model.addAttribute("bookBill", Base64.getEncoder().encodeToString(book.getBookBill().getData()));
+//		return "viewbook";
 //	}
-
 }

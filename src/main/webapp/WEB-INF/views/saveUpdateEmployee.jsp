@@ -26,6 +26,7 @@
 	src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
 <script
 	src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <style>
 .model-header {
 	padding: 5px;
@@ -45,10 +46,11 @@
 </style>
 </head>
 <body>
+
 	<!-- The Modal -->
 	<div class="modal fade" id="editEmployee"
 		style="width: 100%; font-size: 1vw; font-weight: bold;">
-		<div class="modal-dialog modal-xl" role="document">
+		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
 				<div class="model-header">
 					<h3>Employee</h3>
@@ -62,10 +64,10 @@
 
 							<div class="row mb-3">
 								<c:if test="${employee!=null }">
-									<label for="empId" class="col-md-3 col-form-label">EmployeeId
+									<label for="empId" class="col-md-3 col-form-label" style="display: none;">EmployeeId
 										: </label>
 									<div class="col-md-8">
-										<input class="form-control form-control-sm" name="employeeId"
+										<input type="hidden" class="form-control form-control-sm" name="employeeId"
 											readonly="readonly" id="employeeId"
 											value="${employee.employeeId }">
 									</div>
@@ -73,18 +75,19 @@
 							</div>
 							<div class="row mb-3">
 								<label for="email" class="col-md-3 col-form-label">Email
-									:</label>
+									<span class="text-danger">*</span></label>
 								<div class="col-md-8" id="email" onchange="validEmail()">
 									<input type="email" class="form-control form-control-sm" placeholder="Email"
 										name="email" id="email" value="${employee.email}">
 										<span id="idemail"></span><b><span class="formerror">
 									</span></b>
+									<span class="text-danger"> ${existEmail}</span>
 									<form:errors path="email" cssClass="formerror" />
 								</div>
 							</div>
 							<div class="row mb-3">
 								<label for="purdate" class="col-md-3 col-form-label">First
-									Name :</label>
+									Name <span class="text-danger">*</span></label>
 								<div class="col-md-8"id="name">
 									<input type="text" class="form-control form-control-sm"oninput="validfirstname()" placeholder="first name"
 										name="firstName" id="firstName" value="${employee.firstName}">
@@ -94,7 +97,7 @@
 							</div>
 							<div class="row mb-3">
 								<label for="name" class="col-md-3 col-form-label">Last
-									Name :</label>
+									Name <span class="text-danger">*</span></label>
 								<div class="col-md-8" id="lname">
 									<input type="text" class="form-control form-control-sm" oninput="validlastname()" placeholder="last Name"
 										id="lastName" name="lastName" value="${employee.lastName}">
@@ -105,7 +108,7 @@
 							<hr>
 							<!-- Modal footer -->
 							<div class="model-footer">
-								<a href="../home/employee_view" class="btn btn-secondary "
+								<a href="../admin/employee_view" class="btn btn-secondary "
 									style="font-size: 1vw;">Close</a>
 								<button type="submit" class="btn btn-primary"
 									style="font-size: 1vw;">save</button>
@@ -158,9 +161,11 @@ if(email.indexOf("@")<=0){
 
 }if((email.charAt(email.length-4)!='.') && (email.charAt(email.length-3)!='.')){
     document.getElementById("idemail").innerHTML="**invalid input"
-}else{
-    document.getElementById("idemail").innerHTML=""
 }
+else{
+	    document.getElementById("idemail").innerHTML=""
+	}
+
 }
 //-----------------
 function clearErr(){
@@ -188,21 +193,15 @@ if (email.length>35){
 if(email.indexOf("@")<=0){
 	seterr("email","**Email is not correct")
     	return false;
-
 }
-//var dEmail="${Param.employeeList}";
-/* if(email=="${employee.email}"){
-	seterr("email","**email already exist!")
-	return false;
-	
-} */
+
 let name = document.forms['employee']["firstName"].value;
 if (name.length == 0){
     seterr("name", "**first name cannot be empty!");
     return false;
 }
- if (name.length<4){
-    seterr("name", "*First Name should have char between 4-15");
+ if (name.length<3){
+    seterr("name", "*First Name should have char between 3-10");
     return false;
 }
  if (name.search(/[0-9]/)>=0){

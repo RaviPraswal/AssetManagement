@@ -40,7 +40,7 @@
 }
 html {
 	/*  background: radial-gradient(ellipse at center, #0264d6 1%, #1c2b5a 100%); */
-	background-image: url('../img/login.jpg');
+	background-image: url('static/img/login.jpg');
 	background-repeat: no-repeat;
 	background-size: cover;
 	height: calc(100vh);

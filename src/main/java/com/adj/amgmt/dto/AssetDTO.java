@@ -44,11 +44,13 @@ public class AssetDTO {
 	@NotBlank(message = "This Field is Required")
 	private String billNo;
 
-	private AssetTypes assetType;
+	private AssetTypeDTO assetType;
 
 	private String parentAsset;
 
 	@NotNull(message = "Please choose a file")
 	private MultipartFile file;
+	
+	private String billFileName;
 
 }

@@ -45,14 +45,20 @@
 	text-align: right;
 }
 
+.formerror, #s1, #idemail, #s2, #s, #pq, #w {
+	color: red;
+}
+
 .error {
 	color: #ff0000;
 }
 </style>
 </head>
 <body>
+	<%@ include file="accessoryView.jsp"%>
+
 	<!-- The Modal -->
-	<div class="modal fade" id="open_update_accessory_form"
+	<div class=" modal fade" id="open_update_accessory_form"
 		style="width: 100%; font-size: 1vw; font-weight: bold;">
 		<div class="modal-dialog modal-lg" role="document">
 			<div class="modal-content">
@@ -63,7 +69,7 @@
 				<!-- Modal body -->
 				<div class="modal-body">
 					<div class="container">
-						<form:form
+						<form:form onsubmit="return validForm()"
 							action="save_update_accessory?${_csrf.parameterName}=${_csrf.token}"
 							method="post" modelAttribute="accessory"
 							enctype="multipart/form-data">
@@ -80,43 +86,55 @@
 							</c:if>
 							<div class="row mb-2">
 								<label for="skuNumber" class="col-md-2 col-form-label">Sku
-									Number :</label>
-								<div class="col-md-4">
+									Number <span class="text-danger">*</span>
+								</label>
+								<div class="col-md-4" id="snumber">
 									<input type="text" class="form-control form-control-sm"
-										value="${accessory.skuNumber}" name="skuNumber" id="skuNumber">
+										placeholder="sku Number" name="skuNumber" id="skuNumber"
+										value="${accessory.skuNumber}">
 									<form:errors path="skuNumber" cssClass="error" />
+									<span id="s"></span><span class="formerror"> </span>
 								</div>
-								<label for="UnitCost" class="col-md-2 col-form-label">Unit
-									Cost :</label>
-								<div class="col-md-4">
+								<label for="cost" class="col-md-2 col-form-label">Unit
+									Cost <span class="text-danger">*</span>
+								</label>
+								<div class="col-md-4" id="Cost">
 									<input type="text" class="form-control form-control-sm"
-										id="cost" name="cost" value="${accessory.cost}">
+										oninput="validCost()" placeholder="0" id="cost" name="cost"
+										value="${accessory.cost}">
 									<form:errors path="cost" cssClass="error" />
+									<span id="s2"></span><b><span class="formerror"> </span></b>
 								</div>
 
 							</div>
 							<div class="row mb-2">
-								<label for="name" class="col-md-2 col-form-label">Name :</label>
-								<div class="col-md-4">
+								<label for="name" class="col-md-2 col-form-label">Name :<span
+									class="text-danger">*</span></label>
+								<div class="col-md-4" id="name">
 									<input type="text" class="form-control form-control-sm"
-										id="name" name="name" value="${accessory.name}">
+										oninput="validname()" placeholder="Name" id="name" name="name"
+										value="${accessory.name}">
 									<form:errors path="name" cssClass="error" />
+									<span id="s1"></span><b><span class="formerror"> </span></b>
 								</div>
 								<label for="purchaseQuantity" class="col-md-2 col-form-label">
-									Purchase Qty :</label>
-								<div class="col-md-4">
+									Purchase Qty<span class="text-danger">*</span>
+								</label>
+								<div class="col-md-4" id="purQty">
 									<input type="text" class="form-control form-control-sm"
-										name="purchaseQuantity" value="${accessory.purchaseQuantity}">
+										placeholder="0" name="purchaseQuantity" id="purchaseQuantity"
+										value="${accessory.purchaseQuantity}"> <span id="s1"></span><b><span
+										class="formerror"></span></b>
 									<form:errors path="purchaseQuantity" cssClass="error" />
 								</div>
 							</div>
 							<div class="row mb-2">
-
-								<label for="model" class="col-md-2 col-form-label">Type:
+								<label for="model" class="col-md-2 col-form-label">Type
+									<span class="text-danger">*</span>
 								</label>
-								<div class="col-md-4">
+								<div class="col-md-4" id="type">
 									<form:select class="form-select form-select-sm"
-										path="accessoryType.id">
+										path="accessoryType.id" required="${true}">
 										<c:forEach items="${loadAccessoryTypes}"
 											var="loadAccessoryTypesObj">
 											<c:if test="${loadAccessoryTypesObj!=null}">
@@ -125,32 +143,41 @@
 											</c:if>
 										</c:forEach>
 									</form:select>
+									<span id="w"></span><span class="formerror"> </span>
 									<%-- <form:errors path="purchaseQuantity" cssClass="error" /> --%>
 								</div>
-								<label for="vender" class="col-md-2 col-form-label">Vender:</label>
-								<div class="col-md-4">
+								<label for="vender" class="col-md-2 col-form-label">Vender
+									<span class="text-danger">*</span>
+								</label>
+								<div class="col-md-4" id="Vender">
 									<input type="text" class="form-control form-control-sm"
-										value="${accessory.vendor}" id="vendor" name="vendor">
+										oninput="validVender()" placeholder="vender" id="vendor"
+										name="vendor" value="${accessory.vendor}">
 									<form:errors path="vendor" cssClass="error" />
+									<span id="s1"></span><span class="formerror"> </span>
 								</div>
 							</div>
-
 							<div class="row mb-2">
 								<label for="billNumber" class="col-md-2 col-form-label">Bill
-									No :</label>
-								<div class="col-md-4">
+									No <span class="text-danger">*</span>
+								</label>
+								<div class="col-md-4" id="bnumber">
 									<input type="text" class="form-control form-control-sm"
-										id="billNumber" name="billNumber"
+										placeholder="bill number" id="billNumber" name="billNumber"
 										value="${accessory.billNumber }">
 									<form:errors path="billNumber" cssClass="error" />
+									<span id="s1"></span><span class="formerror"> </span>
 								</div>
 								<form:label for="billdocument" class="col-md-2 col-form-label"
 									path="file">Bill
-									Document : </form:label>
+									Document<span class="text-danger">*</span>
+								</form:label>
 								<div class="col-md-4">
 									<input type="file" class="form-control form-control-sm"
-										value="${accessory.file}" id="file" name="file">
+										value="${accessory.file}" id="file" name="file" required>
+									Previous Bill=${billFileName}
 									<form:errors path="file" cssClass="error" />
+									<span id="s1"></span><span class="formerror"> </span>
 								</div>
 							</div>
 							<div class="row mb-2">
@@ -162,11 +189,13 @@
 										id="description"></textarea>
 								</div>
 								<label for="purdate" class="col-md-2 col-form-label">Purchase
-									Date :</label>
-								<div class="col-md-4">
+									Date<span class="text-danger">*</span>
+								</label>
+								<div class="col-md-4" id="purchasedate">
 									<input type="date" class="form-control form-control-sm"
 										value="${accessory.purchaseDate}" name="purchaseDate"
-										id="purchaseDate">
+										id="purchaseDate"> <span id="s2"></span><span
+										class="formerror"> </span>
 									<form:errors path="purchaseDate" cssClass="error" />
 								</div>
 							</div>
@@ -178,10 +207,7 @@
 								<button type="submit" class="btn btn-primary"
 									style="font-size: 1vw;">save</button>
 							</div>
-
-
 						</form:form>
-
 					</div>
 				</div>
 			</div>
@@ -192,5 +218,155 @@
 			$("#open_update_accessory_form").modal('show');
 		});
 	</script>
+	<script>
+	function validCost(){ 
+		  let cost = document.forms['accessory']["cost"].value;
+		if (cost.search(/[A-Z]/)>=0){
+		  document.getElementById("s2").innerHTML="dont use String";  
+		}else if (cost.search(/[a-z]/)>=0){
+		  document.getElementById("s2").innerHTML="dont use String";  
+		}
+		else if(cost.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+		    document.getElementById("s2").innerHTML="don't use symbolic character";
+		}
+		else{
+		    document.getElementById("s2").innerHTML="";
+		}
+		}
+//---validation javascript code---------------name
+function validname(){ 
+  let name = document.forms['accessory']["name"].value;
+if (name.search(/[0-9]/)>=0){
+  document.getElementById("s1").innerHTML="dont use numbers value";  
+}else if(name.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+    document.getElementById("s1").innerHTML="don't use symbolic character";
+}
+else{
+    document.getElementById("s1").innerHTML="";
+}
+}
+function validVender(){
+	let vender = document.forms['accessory']["vendor"].value;
+	if (name.search(/[0-9]/)>=0){
+		document.getElementById("s1").innerHTML="dont use numbers value";  
+	}else if(name.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+		 document.getElementById("s1").innerHTML="don't use symbolic character";
+	}
+	else{
+		 document.getElementById("s1").innerHTML="";
+	}
+}
+//-----------------
+function clearErr(){
+errors = document.getElementsByClassName('formerror');
+for(let item of errors)
+{
+    item.innerHTML = "";
+}
+} function seterr(id, error){
+element = document.getElementById(id);
+element.getElementsByClassName("formerror")[0].innerHTML = error;
+
+}
+function validForm(){
+clearErr();
+let snumber = document.forms['accessory']["skuNumber"].value;
+if (snumber.length == 0){
+    seterr("snumber", "* Sku number cannot be empty!");
+    return false;
+}
+let cost = document.forms['accessory']["cost"].value;
+if (cost.length == 0){
+    seterr("Cost", "* cost cannot be empty!");
+    return false;
+}
+if (cost.length<2){
+    seterr("Cost", "*cost enter atleast 2 digit");
+    return false;
+}
+if (cost.search(/[A-Z]/)>=0){
+	 seterr("Cost", "*please enter numeric value not enter String");
+	 return false;
+}
+if(cost.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+	 seterr("Cost", "*cost is not symbol");
+	 return false;
+}
+
+let name = document.forms['accessory']["name"].value;
+if (name.length == 0){
+    seterr("name", "*name cannot be empty!");
+    return false;
+}
+ if (name.length<2){
+    seterr("name", "*Name should have char between 2-10");
+    return false;
+}
+if (name.length>10){
+    seterr("name", "* name too long,Name should have char between 2-10");
+    return false;
+}
+if (name.search(/[0-9]/)>=0){
+ 	seterr("name", "*please enter string type name not enter number");
+	 return false;
+}
+if(name.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+ 	seterr("name", "*name is not symbol");
+	 return false;
+}
+let pQuantity = document.forms['accessory']["purchaseQuantity"].value;
+if (pQuantity.length == 0){
+    seterr("purQty", "*purchaseQuantity cannot be empty!");
+    return false;
+}
+if (pQuantity.search(/[A-Z]/)>=0){
+   seterr("purQty", "*purchaseQuantity cannot entry String!");
+   return false;
+}
+if (pQuantity.search(/[a-z]/)>=0){
+    seterr("purQty", "*purchaseQuantity cannot entry String!");
+    return false;
+} 
+let aType = document.forms['accessory']["accessoryType"].value;
+if (aType.length == 0){
+    seterr("type", "*This field cannot be empty!");
+    return false;
+}
+let vender = document.forms['accessory']["vendor"].value;
+if (vender.length == 0){
+	seterr("Vender", "*this cannot be empty!");
+	return false;
+}
+if (vender.length<2){
+    seterr("Vender", "*vender should have atleast 3 character");
+    return false;
+}
+if(vender.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+	 seterr("Vender", "*vendor is not symbol only use hyphen - ");
+	 return false;
+}
+let bNumber = document.forms['accessory']["billNumber"].value;
+if (bNumber.length == 0){
+	seterr("bnumber", "* billNumber cannot be empty!");
+	return false;
+}
+if (bNumber.length<3){
+	seterr("bnumber", "*billNumber should have atleast 3 character");
+	return false;
+}
+if(bNumber.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+	seterr("bnumber", "*billNumber is not use symbol");
+	return false;
+}
+let pdate = document.forms['accessory']["purchaseDate"].value;
+if (pdate.length == 0){
+    seterr("purchasedate", "*This date cannot be empty!");
+    return false;
+}
+else{
+	return true;
+}	
+}
+  </script>
 </body>
 </html>

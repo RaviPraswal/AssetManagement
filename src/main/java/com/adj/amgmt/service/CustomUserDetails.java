@@ -46,7 +46,6 @@ public class CustomUserDetails implements UserDetails {
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
-		System.out.println("------------------->>>>>>>>>>>>.");
 		Set<Authority> roles = new HashSet<>();
 		this.roles.forEach(role -> {
 			roles.add(new Authority(role.getName()));

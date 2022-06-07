@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,18 +22,23 @@ public class EmployeeController {
 
 	// controller to open employee page
 	@RequestMapping(value = "/")
-	public ModelAndView employee_view() {
+	public ModelAndView listView() {
 		ModelAndView modelAndView = new ModelAndView();
-		List<EmployeeDTO> employeeListDTO = employeeService.getEmployeeList();
-		modelAndView.addObject("employeeList", employeeListDTO);
-		modelAndView.setViewName("employeeView");
+		try {
+			List<EmployeeDTO> employeeListDTO = employeeService.getEmployeeList();
+			modelAndView.addObject("employeeList", employeeListDTO);
+			modelAndView.setViewName("employeeView");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return modelAndView;
 
 	}
 
-	// controller to save an employee
+	// controller to open save form of employee
 	@RequestMapping(value = "/open_employee")
-	public String openEmployee() {
+	public String saveView(Model model) {
+		model.addAttribute("employee", new EmployeeDTO());
 		return "saveUpdateEmployee";
 	}
 
@@ -40,30 +46,52 @@ public class EmployeeController {
 	@RequestMapping(value = "/save_update_employee")
 	public ModelAndView saveEmployee(@ModelAttribute("employee") EmployeeDTO employeeDTO) {
 		ModelAndView modelAndView = new ModelAndView();
+		try {
+			List<EmployeeDTO> employeeList = employeeService.getEmployeeList();
+			for (EmployeeDTO employeeDTO2 : employeeList) {
+				if (employeeDTO2.getEmail().equals(employeeDTO.getEmail())) {
+					System.out.println("Employee already exists<----");
+					modelAndView.addObject("existEmail", " * This Email already exist!");
+					modelAndView.setViewName("saveUpdateEmployee");
+					return modelAndView;
+				}
+			}
+			employeeService.addEmployee(employeeDTO);
+			modelAndView.addObject("saved", "savedSuccessfully");
+			modelAndView.setViewName("redirect:/employee/");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return modelAndView;
+	}
 
-		employeeService.addEmployee(employeeDTO);
-		modelAndView.addObject("saved", "savedSuccessfully");
-
-		modelAndView.setViewName("redirect:/employee/");
+	// controller to save an employee
+	@RequestMapping(value = "/editEmployee")
+	public ModelAndView editEmployee(@RequestParam("empId") int empId) {
+		ModelAndView modelAndView = new ModelAndView("employee");
+		EmployeeDTO employeeDTO = employeeService.getEmployeeById(empId);
+		modelAndView.addObject("employee", employeeDTO);
+		modelAndView.setViewName("saveUpdateEmployee");
+		/*
+		 * try { employeeService.addEmployee(employeeDTO);
+		 * modelAndView.addObject("saved", "savedSuccessfully");
+		 * modelAndView.setViewName("redirect:/employee/"); } catch (Exception e) {
+		 * e.printStackTrace(); }
+		 */
 		return modelAndView;
 	}
 
 	// controller to delete an employee by id
 	@RequestMapping("/delete_employee_by_Id")
-	public ModelAndView deleteEmployeeById(@ModelAttribute("id") int id) {
+	public ModelAndView deleteById(@ModelAttribute("id") int id) {
 		ModelAndView modelAndView = new ModelAndView();
-		employeeService.deleteEmployeeById(id);
-		modelAndView.setViewName("redirect:/employee/");
-		return modelAndView;
-	}
-
-	// controller is used to forward the data to edit form
-	@RequestMapping("/editEmployee")
-	public ModelAndView openUpdateform(@RequestParam("empId") int empId) {
-		ModelAndView modelAndView = new ModelAndView("employee");
-		EmployeeDTO employeeDTO = employeeService.getEmployeeById(empId);
-		modelAndView.addObject("employee", employeeDTO);
-		modelAndView.setViewName("saveUpdateEmployee");
+		try {
+			employeeService.deleteEmployeeById(id);
+			modelAndView.addObject("delete", "deleted");
+			modelAndView.setViewName("redirect:/employee/");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return modelAndView;
 	}
 

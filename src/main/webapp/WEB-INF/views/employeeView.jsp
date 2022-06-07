@@ -108,7 +108,7 @@
 				<div class="modal-header">
 					<h4 class="modal-title">Delete Assets</h4>
 				</div>
-				<div class="modal-body">Are you sure delete this asset..</div>
+				<div class="modal-body">Are you sure delete this Employee..</div>
 				<form action="delete_employee_by_Id" id="delete-data">
 					<div class="row mb-3 ml-2">
 						<label for="id" class="col-md-3 col-form-label"
@@ -137,7 +137,7 @@
 			}
 		
 </script>
-	<!-- end delete asset code here -->
+	<!-- end delete employee code here -->
 
 	<!-- table scripting code -->
 	<script type="text/javascript">

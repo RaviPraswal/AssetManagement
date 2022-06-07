@@ -44,7 +44,9 @@
 	padding: 5px;
 	text-align: right;
 }
-
+.formerror, #s1{
+	color: red;
+}
 .error {
 	color: #ff0000;
 }
@@ -63,37 +65,40 @@
 				<!-- Modal body -->
 				<div class="modal-body">
 					<div class="container">
-						<form:form action="save_accessory_type" method="post"
+						<form:form onsubmit="return validForm()" action="save_accessory_type" method="post"
 							modelAttribute="accessoryType">
 
 							<div class="row mb-3">
 								<c:if test="${accessoryType!=null }">
-									<label for="id" class="col-md-2 col-form-label">Id :</label>
+									<label for="id" class="col-md-2 col-form-label" style="display: none;">Id :</label>
 									<div class="col-md-9">
-										<input class="form-control form-control-sm" readOnly name="id"
+										<input type="hidden"class="form-control form-control-sm" readOnly name="id"
 											id="id" value="${accessoryType.id} ">
 									</div>
 								</c:if>
-								<label for="typeName" class="col-md-2 col-form-label">Name
-									:</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control form-control-sm"
-										name="typeName" id="typeName"
-										value="${accessoryType.typeName} ">
-									<form:errors path="typeName" cssClass="error" />
 								</div>
-								<!-- </div>
-						<div class="row mb-3"> -->
+							<div class="row mb-3">
+								<label for="typeName" class="col-md-2 col-form-label">Name
+									<span class="text-danger">*</span> </label>
+								<div class="col-md-9" id="accessoryTypeName">
+									<input type="text" class="form-control form-control-sm"
+									oninput="validName()" placeholder="Name"
+										name="typeName" id="typeName"
+										value="${accessoryType.typeName}">
+									<form:errors path="typeName" cssClass="error" />
+									<span id="s1"></span><b><span class="formerror"></span></b>
+								</div>
+							</div>
+							<div class="row mb-3">
 								<label for="parent_type" class="col-md-2 col-form-label">ParentType
 								</label>
 								<div class="col-md-9">
 									<form:select class="form-select  form-select-sm"
 										path="parentType">
-										<option selected disabled value="">select type</option>
+										<option  value="${accessoryType.parentType}">${accessoryType.parentType}</option>
 										<c:forEach items="${parentTypeList}" var="parentType">
 											<c:if test="${parentType!=null}">
-												<form:option value="${parentType}"
-													label="${parentType}"></form:option>
+												<form:option value="${parentType}" label="${parentType}"></form:option>
 											</c:if>
 										</c:forEach>
 									</form:select>
@@ -103,16 +108,13 @@
 							<hr>
 							<!-- Modal footer -->
 							<div class="model-footer">
-								<a href="../home/accessory_type_view" class="btn btn-secondary "
+								<a href="../admin/accessory_type_view" class="btn btn-secondary "
 									style="font-size: 1vw;">Close</a>
 
 								<button type="submit" class="btn btn-primary"
 									style="font-size: 1vw;">save</button>
 							</div>
-
-
 						</form:form>
-
 					</div>
 				</div>
 			</div>
@@ -123,5 +125,56 @@
 			$("#edit-modal-content").modal('show');
 		});
 	</script>
+	<script>
+	//---validation javascript code---------------name
+	function validName(){ 
+	  let name = document.forms['accessoryType']["typeName"].value;
+	if (name.search(/[0-9]/)>=0){
+	  document.getElementById("s1").innerHTML="*dont use numbers value";  
+	}else if(name.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+	    document.getElementById("s1").innerHTML="*don't use symbolic character";
+	}
+	else{
+	    document.getElementById("s1").innerHTML="";
+	}
+	}
+	//-----------------
+	function clearErr(){
+	errors = document.getElementsByClassName('formerror');
+	for(let item of errors)
+	{
+	    item.innerHTML = "";
+	}
+	} function seterr(id, error){
+	element = document.getElementById(id);
+	element.getElementsByClassName("formerror")[0].innerHTML = error;
+
+	}
+	function validForm(){
+	clearErr();
+	let name = document.forms['accessoryType']["typeName"].value;
+	if (name.length == 0){
+	    seterr("accessoryTypeName", "* name cannot be empty!");
+	    return false;
+	}if (name.length<2){
+	    seterr("accessoryTypeName", "*Name should have char between 2-10");
+	    return false;
+	}
+	if (name.length>10){
+		    seterr("accessoryTypeName", "* name too long **Name should have char between 2-10");
+		    return false;
+		}
+	if (name.search(/[0-9]/)>=0){
+		 seterr("accessoryTypeName", "*please enter string type name not enter number");
+		 return false;
+	}
+	if(name.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+		 seterr("accessoryTypeName", "*name is not symbol");
+		 return false;
+	 } else{
+			return true;
+		 }	
+	}
+	  </script>
 </body>
 </html>

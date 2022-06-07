@@ -3,6 +3,8 @@ package com.adj.amgmt.service;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bson.BsonBinarySubType;
+import org.bson.types.Binary;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +12,9 @@ import org.springframework.stereotype.Service;
 import com.adj.amgmt.dto.AccessoryDTO;
 import com.adj.amgmt.dto.AccessoryIssueDTO;
 import com.adj.amgmt.entity.Accessory;
+import com.adj.amgmt.entity.Bill;
 import com.adj.amgmt.repository.AccessoryRepository;
+import com.adj.amgmt.repository.BillRepository;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -22,9 +26,9 @@ public class AccessoryServiceImpl implements AccessoryService {
 
 	@Autowired
 	AccessoryRepository accessoryRepository;
-	
-//	@Autowired
-//	AccessoryRepositoryImpl accessoryRepository;
+
+	@Autowired
+	BillRepository billRepo;
 
 	@Autowired
 	AccessoryIssueService accessoryIssueService;
@@ -33,10 +37,23 @@ public class AccessoryServiceImpl implements AccessoryService {
 	ModelMapper modelMapper;
 
 	public void saveAccessory(AccessoryDTO accessoryDTO) {
+		Bill bill = new Bill();
+		String fileName = "";
+		try {
+			Accessory accessory = modelMapper.map(accessoryDTO, Accessory.class);
 
-		Accessory accessory = modelMapper.map(accessoryDTO, Accessory.class);
-		accessory.setFileName(accessoryDTO.getFile().getOriginalFilename());
-		accessoryRepository.saveAndFlush(accessory);
+			fileName = accessory.getFile().getOriginalFilename();
+			accessory.setFileName(fileName);
+
+			bill.setFileName(fileName);
+			bill.setFileBill(new Binary(BsonBinarySubType.BINARY, accessory.getFile().getBytes()));
+			billRepo.insert(bill);
+
+			accessory.setFileName(accessoryDTO.getFile().getOriginalFilename());
+			accessoryRepository.saveAndFlush(accessory);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 	}
 
@@ -45,7 +62,7 @@ public class AccessoryServiceImpl implements AccessoryService {
 		List<AccessoryIssueDTO> accessoryIssuesList = accessoryIssueService.getAccessoryIssuesList();
 		boolean flag = false;
 		for (AccessoryIssueDTO accessoryIssueDTO : accessoryIssuesList) {
-			Accessory accessory = accessoryIssueDTO.getAccessory();
+			AccessoryDTO accessory = accessoryIssueDTO.getAccessory();
 			if (accessory.getId() == id) {
 				flag = true;
 				break;
@@ -76,6 +93,7 @@ public class AccessoryServiceImpl implements AccessoryService {
 
 		Accessory accessory = accessoryRepository.getById(accessoryId);
 		AccessoryDTO accessoryDTO = modelMapper.map(accessory, AccessoryDTO.class);
+		accessoryDTO.setBillFileName(accessory.getFileName());
 		return accessoryDTO;
 	}
 

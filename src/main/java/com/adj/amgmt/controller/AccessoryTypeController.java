@@ -13,7 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.adj.amgmt.dto.AccessoryDTO;
 import com.adj.amgmt.dto.AccessoryTypesDTO;
+import com.adj.amgmt.service.AccessoryService;
 import com.adj.amgmt.service.AccessoryTypesServiceImpl;
 
 @Controller
@@ -22,30 +24,41 @@ public class AccessoryTypeController {
 
 	@Autowired
 	AccessoryTypesServiceImpl accessoryTypesService;
+	
+	@Autowired
+	AccessoryService accessoryService;
 
 	// controller to show accessory type page
 	@RequestMapping("/")
-	public ModelAndView accessoryTypeView() {
+	public ModelAndView listView() {
 		ModelAndView modelAndView = new ModelAndView();
-		List<AccessoryTypesDTO> accessoryTypeListDTO = accessoryTypesService.getAccessoryTypeList();
-		modelAndView.addObject("accessoryTypeList", accessoryTypeListDTO);
-		modelAndView.setViewName("accessoryTypeView");
+		try {
+			List<AccessoryTypesDTO> accessoryTypeListDTO = accessoryTypesService.getAccessoryTypeList();
+			modelAndView.addObject("accessoryTypeList", accessoryTypeListDTO);
+			modelAndView.setViewName("accessoryTypeView");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return modelAndView;
 	}
 
 	// controller to open save and update form
 	@RequestMapping("/save_update_view")
-	public ModelAndView saveAssetTypeView() {
+	public ModelAndView saveView() {
 		ModelAndView modelAndView = new ModelAndView();
-		List<AccessoryTypesDTO> accessoryTypeListDTO = accessoryTypesService.getAccessoryTypeList();
-		List<String> parentTypeList=new ArrayList<String>();
-		for (AccessoryTypesDTO accessoryTypeDTO : accessoryTypeListDTO) {
-			String typeName = accessoryTypeDTO.getTypeName();
-			parentTypeList.add(typeName);
+		try {
+			List<AccessoryTypesDTO> accessoryTypeListDTO = accessoryTypesService.getAccessoryTypeList();
+			List<String> parentTypeList = new ArrayList<String>();
+			for (AccessoryTypesDTO accessoryTypeDTO : accessoryTypeListDTO) {
+				String typeName = accessoryTypeDTO.getTypeName();
+				parentTypeList.add(typeName);
+			}
+			modelAndView.addObject("parentTypeList", parentTypeList);
+			modelAndView.addObject("accessoryType", new AccessoryTypesDTO());
+			modelAndView.setViewName("saveUpdateAccessoryType");
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		modelAndView.addObject("parentTypeList", parentTypeList);
-		modelAndView.addObject("accessoryType", new AccessoryTypesDTO());
-		modelAndView.setViewName("saveUpdateAccessoryType");
 		return modelAndView;
 	}
 
@@ -58,19 +71,9 @@ public class AccessoryTypeController {
 			modelAndView.setViewName("saveUpdateAccessoryType");
 		} else {
 			accessoryTypesService.saveAccessoryType(accessoryTypeDTO);
+			modelAndView.addObject("saved", "save/update");
 			modelAndView.setViewName("redirect:/accessory_type/");
 		}
-
-		return modelAndView;
-	}
-
-	// controller to delete accessory type
-	@RequestMapping("/delete_accessory_type")
-	public ModelAndView deleteAccessoryTypeById(@RequestParam int id) {
-		ModelAndView modelAndView = new ModelAndView();
-		boolean deleteAccessoryTypeById =accessoryTypesService.deleteAccessoryTypeById(id);
-		modelAndView.addObject("deleteAccessoryTypeById", deleteAccessoryTypeById);
-		modelAndView.setViewName("redirect:/accessory_type/");
 		return modelAndView;
 	}
 
@@ -79,8 +82,41 @@ public class AccessoryTypeController {
 	public ModelAndView openUpdateform(@RequestParam("accessoryTypeId") int accessoryTypeId) {
 		ModelAndView modelAndView = new ModelAndView("accessoryType");
 		AccessoryTypesDTO accessoryTypeDTO = accessoryTypesService.getAccessoryTypeId(accessoryTypeId);
+
+		List<AccessoryTypesDTO> accessoryTypeListDTO = accessoryTypesService.getAccessoryTypeList();
+		List<String> parentTypeList = new ArrayList<String>();
+		for (AccessoryTypesDTO accessoryType : accessoryTypeListDTO) {
+			String typeName = accessoryType.getTypeName();
+			parentTypeList.add(typeName);
+		}
+		modelAndView.addObject("parentTypeList", parentTypeList);
+
 		modelAndView.addObject("accessoryType", accessoryTypeDTO);
 		modelAndView.setViewName("saveUpdateAccessoryType");
+		return modelAndView;
+	}
+
+	// controller to delete accessory type
+	@RequestMapping("/delete_accessory_type")
+	public ModelAndView deleteById(@RequestParam int id) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			List<AccessoryDTO> accessoryList = accessoryService.getAccessoryList();
+			for (AccessoryDTO accessoryDTO : accessoryList) {
+				if (accessoryDTO.getAccessoryType().getId() == id) {
+					System.out.println("--------->Id Already exist");
+					modelAndView.addObject("existId", "This Accessory Already Assigned.");
+					modelAndView.setViewName("errorId");
+					return modelAndView;
+				} else {
+					accessoryTypesService.deleteAccessoryTypeById(id);
+					modelAndView.addObject("delete", "deleted");
+					modelAndView.setViewName("redirect:/accessory_type/");
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return modelAndView;
 	}
 

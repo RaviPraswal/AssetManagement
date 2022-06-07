@@ -36,13 +36,16 @@
 	padding: 5px;
 	text-align: right;
 }
-
 .error {
 	color: #ff0000;
+}
+.formerror, #s1, #s2,#s, #Emp {
+	color: red;
 }
 </style>
 </head>
 <body>
+
 	<!-- The Modal -->
 	<div class="modal fade" id="edit-modal-content"
 		style="width: 100%; font-size: 1vw; font-weight: bold;">
@@ -55,39 +58,49 @@
 				<!-- Modal body -->
 				<div class="modal-body">
 					<div class="container">
-						<form:form action="save_update_accessory_issue" method="post"
+						<form:form onsubmit="return validForm()"
+							action="save_update_accessory_issue" method="post"
 							modelAttribute="accessoryIssues">
 
 							<div class="row mb-3">
 								<c:if test="${ accessoryIssues!=null}">
-									<label for="id" class="col-md-3 col-form-label" style="display: none;">Id :</label>
+									<label for="id" class="col-md-3 col-form-label"
+										style="display: none;">Id :</label>
 									<div class="col-md-9">
-										<input type="hidden"class="form-control form-control-sm" readOnly name="id"
-											id="id" value="${accessoryIssues.id} ">
+										<input type="hidden" class="form-control form-control-sm"
+											readOnly name="id" id="id" value="${accessoryIssues.id} ">
 									</div>
 								</c:if>
 							</div>
 							<div class="row mb-2">
-								<label for="accessory" class="col-md-3 col-form-label">Accessory:</label>
-								<div class="col-md-9">
-									<form:select class=" form-select form-select-sm" path="accessory.id">
-										<option selected disabled value="" >Select Accessory</option>
+								<label for="accessory" class="col-md-3 col-form-label">Accessory<span
+									class="text-danger">*</span></label>
+								<div class="col-md-9" id="accessory">
+									<form:select class=" form-select form-select-sm"
+										path="accessory.id" >
+										<option selected disabled value="">Select Accessory</option>
 										<c:forEach items="${loadAccessory}" var="loadAccessoryObj">
 											<c:if test="${loadAccessoryObj!=null}">
-												<form:option value="${loadAccessoryObj.id }" label="${loadAccessoryObj.name}"></form:option>
+												<form:option value="${loadAccessoryObj.id }"
+													label="${loadAccessoryObj.name}"></form:option>
 											</c:if>
 										</c:forEach>
 									</form:select>
-
+									<span id="s"></span><b><span class="formerror"> </span></b>
 								</div>
 							</div>
 							<div class="row mb-2">
-								<label for="issuedToEmployee" class="col-md-3 col-form-label">Issue
-									To(Employee) :</label>
-								<div class="col-md-9" style="display: inline-flex;">
-								<input type="radio" name="type" value="employee" style="margin-top: 10px;" >
-									<form:select class="form-select  form-select-sm" path="issuedToEmployee.employeeId" id="issuedToEmployee" disabled = "${true}">
-										<option selected disabled value="" >Select Employee</option>
+								<label for="issuedToEmployee" class="col-md-3">Issue
+									To(Employee)<span class="text-danger">*</span>
+								</label>
+								<div class="col-md-9" id="emp" style="display: inline-flex;">
+									<input type="radio" name="type" value="employee"
+										style="margin-top: 10px; margin-left: -20px;" >
+									<form:select class="form-select  form-select-sm"
+										path="issuedToEmployee.employeeId" id="issuedToEmployee"
+										style="margin-left: 10px;"
+										disabled="${true}">
+										<option selected disabled value="">Select Employee</option>
 										<c:forEach items="${loadEmployee}" var="loadEmployeeObj">
 											<c:if test="${loadEmployeeObj!=null}">
 												<form:option value="${loadEmployeeObj.employeeId}"
@@ -95,35 +108,46 @@
 											</c:if>
 										</c:forEach>
 									</form:select>
+									<span id="Emp"></span><b><span class="formerror"> </span></b>
 								</div>
 							</div>
 							<div class="row mb-1">
-								<label for="issuedToNonEmployee" class="col-md-3 col-form-label">Issue
-									To (Non-Employee) :</label>
-								<div class="col-md-9" style="display: inline-flex;">
-								<input type="radio" name="type"value="employee"style="margin-top: 10px;" >
+								<label for="issuedToNonEmployee" class="col-md-3">Issue
+									To(Non-Employee)<span class="text-danger">*</span>
+								</label>
+								<div class="col-md-9" id="nonEmp" style="display: inline-flex;" >
+									<input type="radio" name="type" value="employee"
+										style="margin-top: 10px; margin-left: -20px;">
 									<input type="text" class="form-control form-control-sm"
-										value="${accessoryIssues.issuedToNonEmployee} "
-										id="issuedToNonEmployee" name="issuedToNonEmployee"disabled="true">
+										oninput="validNonEmployee()"
+										placeholder="Non employee atleast 3 char" id="issuedToNonEmployee"
+										name="issuedToNonEmployee"
+										value="${accessoryIssues.issuedToNonEmployee}"
+										style="margin-left: 10px;" disabled="true">
 								</div>
+								<span id="s1" class="text-center"></span><b><span class="formerror"> </span></b>
 							</div>
 							<div class="row mb-2">
 								<label for="issueDate" class="col-md-3 col-form-label">Issue
-									Date :</label>
-								<div class="col-md-9">
+									Date<span class="text-danger">*</span>
+								</label>
+								<div class="col-md-9" id="date">
 									<input type="date" class="form-control form-control-sm"
 										value="${accessoryIssues.issueDate}" name="issueDate"
 										id="issueDate">
-										<form:errors path="issueDate" cssClass="error"/>
+									<form:errors path="issueDate" cssClass="error" />
+									<span id="s"></span><b><span class="formerror"> </span></b>
 								</div>
 
 								<label for="issueQuantity" class="col-md-3 col-form-label">Issue
-									Qty:</label>
-								<div class="col-md-9" style="margin-top: 10px;">
+									Qty<span class="text-danger">*</span>
+								</label>
+								<div class="col-md-9" style="margin-top: 10px;" id="issueQty">
 									<input type="text" class="form-control form-control-sm"
-										value="${accessoryIssues.issueQuantity} " id="issueQuantity"
-										name="issueQuantity">
-										<form:errors path="issueQuantity" cssClass="error"/>
+										placeholder="0" oninput="validIssueQty()" name="issueQuantity"
+										id="issueQuantity" value="${accessoryIssues.issueQuantity}">
+									<form:errors path="issueQuantity" cssClass="error" />
+									<span id="s2"></span><b><span class="formerror"> </span></b>
 								</div>
 							</div>
 							<div class="row mb-1">
@@ -131,8 +155,7 @@
 									Purpose :</label>
 								<div class="col-md-9">
 									<textarea rows="5" class="form-control form-control-sm"
-										required placeholder="${accessoryIssues.remark}" name="remark"
-										id="remark"></textarea>
+										placeholder="remark..." name="remark" id="remark"></textarea>
 
 								</div>
 							</div>
@@ -159,14 +182,107 @@
 		});
 	</script>
 	<script>
-	document.getElementsByTagName('input')[1].addEventListener('click', function() {
-		  document.getElementById('issuedToEmployee').removeAttribute('disabled',false);
-		  document.getElementById('issuedToNonEmployee').setAttribute('disabled', true);
-		});	
-		document.getElementsByTagName('input')[2].addEventListener('click', function() {
-		  document.getElementById('issuedToNonEmployee').removeAttribute('disabled',false);
-		  document.getElementById('issuedToEmployee').setAttribute('disabled', true);
-		});
+	document.getElementsByTagName('input')[1].addEventListener('click',function() {
+		document.getElementById('issuedToEmployee').removeAttribute('disabled', false);
+		document.getElementById('issuedToNonEmployee').setAttribute('disabled', true);
+	});
+	document.getElementsByTagName('input')[2].addEventListener('click',function() {
+		document.getElementById('issuedToNonEmployee').removeAttribute('disabled', false);
+		document.getElementById('issuedToEmployee').setAttribute('disabled', true);
+	});
+	</script>
+	<script>
+	//---validation javascript code---------------name
+	function validNonEmployee(){ 
+	  let name = document.forms['accessoryIssues']["issuedToNonEmployee"].value;
+	if (name.search(/[0-9]/)>=0){
+	  document.getElementById("s1").innerHTML="dont use numbers value";  
+	}else if(name.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+	    document.getElementById("s1").innerHTML="don't use symbolic character";
+	}
+	else{
+	    document.getElementById("s1").innerHTML="";
+	}
+	}
+	function validIssueQty(){
+		let issueQty = document.forms['accessoryIssues']["issueQuantity"].value;
+		if (issueQty.search(/[A-Z]/)>=0){
+		  document.getElementById("s2").innerHTML="*dont use String";  
+		}else if (issueQty.search(/[a-z]/)>=0){
+		  document.getElementById("s2").innerHTML="*dont use String";  
+		}
+		else if(issueQty.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+		    document.getElementById("s2").innerHTML="*don't use symbolic character";
+		}
+		else{
+		    document.getElementById("s2").innerHTML="";
+		}
+		}
+	//-----------------
+	function clearErr(){
+	errors = document.getElementsByClassName('formerror');
+	for(let item of errors)
+	{
+	    item.innerHTML = "";
+	}
+	} function seterr(id, error){
+	element = document.getElementById(id);
+	element.getElementsByClassName("formerror")[0].innerHTML = error;
+
+	}
+	function validForm(){
+		let accssorY = document.forms['accessoryIssues']["accessory.id"].value;
+		if (accssorY.length == 0){
+		    seterr("accessory", "*This field cannot be empty!");
+		    return false;
+		}
+		let nonemp = document.forms['accessoryIssues']["issuedToNonEmployee"].value;
+		if (nonemp.length == 0){
+		    seterr("nonEmp", "*This cannot be empty!");
+		    return false;
+		}
+		 if (nonemp.length>2){
+		    seterr("nonEmp", "*Name should have char between 2-10");
+		    return false;
+		}
+		if (nonemp.length>10){
+		    seterr("nonEmp", "* name too long,Name should have char between 2-10");
+		    return false;
+		}
+		if (nonemp.search(/[0-9]/)>=0){
+		 	seterr("nonEmp", "*please enter string type name not enter number");
+			 return false;
+		}
+		if(nonemp.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+		 	seterr("nonEmp", "*name is not symbol");
+			 return false;
+		}
+		let idate = document.forms['accessoryIssues']["issueDate"].value;
+		if (idate.length == 0){
+		    seterr("date", "*This date cannot be empty!");
+		    return false;
+		}
+		let issueQty = document.forms['accessoryIssues']["issueQuantity"].value;
+		 if (issueQty.length == 0){
+		     seterr("issueQty", "*issueQuantity cannot be empty!");
+		     return false;
+		 }
+		 if (issueQty.length<1){
+		     seterr("issueQty", "*issueQuantity enter atleast 1");
+		     return false;
+		 }
+		 if (issueQty.search(/[A-Z]/)>=0){
+		 	 seterr("issueQty", "*please enter numeric value not enter String");
+		 	 return false;
+		 }
+		 if(issueQty.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+		 	 seterr("issueQty", "*issueQuantity is not symbol");
+		 	 return false;
+		 }
+		 else{
+				return true;
+			}	
+			}
 	</script>
 </body>
 </html>

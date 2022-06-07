@@ -20,10 +20,9 @@ public class AccessoryIssueDTO {
 
 	private int id;
 
-	@Valid
-	private Accessory accessory;
+	private AccessoryDTO accessory;
 
-	private Employee issuedToEmployee;
+	private EmployeeDTO issuedToEmployee;
 
 	private String issuedToNonEmployee;
 

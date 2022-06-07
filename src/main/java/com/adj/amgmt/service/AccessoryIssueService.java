@@ -9,7 +9,7 @@ public interface AccessoryIssueService {
 
 	List<AccessoryIssueDTO> getAccessoryIssuesList();
 
-	void saveAccessoryIssue(AccessoryIssueDTO accessoryIssueDTO);
+	boolean saveAccessoryIssue(AccessoryIssueDTO accessoryIssueDTO);
 
 	void deleteAccessoryIssueById(int id);
 

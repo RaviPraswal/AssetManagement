@@ -48,6 +48,9 @@
 .error {
 	color: #ff0000;
 }
+.formerror, #s1, #idemail, #s2 {
+	color: red;
+}
 </style>
 </head>
 <body>
@@ -63,33 +66,37 @@
 				<!-- Modal body -->
 				<div class="modal-body">
 					<div class="container">
-						<form:form action="save_asset_type" method="POST"
+						<form:form onsubmit="return validForm()" action="save_asset_type" method="POST"
 							modelAttribute="assetType">
 
 							<div class="row mb-3">
 								<c:if test="${assetType!=null }">
-									<label for="assetTypeId" class="col-md-2 col-form-label">Id
+									<label for="assetTypeId" class="col-md-2 col-form-label" style="display:none;">Id
 										:</label>
 									<div class="col-md-9">
-										<input class="form-control form-control-sm" readOnly name="id"
+										<input type="hidden"class="form-control form-control-sm" readOnly name="id"
 											id="id" value="${assetType.id} ">
 									</div>
 								</c:if>
-								<label for="name" class="col-md-2 col-form-label">Name :</label>
-								<div class="col-md-9">
-									<input type="text" class="form-control form-control-sm"
-										name="typeName" id="typeName" value="${assetType.typeName} "
-										placeholder="name">
-									<form:errors path="typeName" cssClass="error" />
 								</div>
-								<!-- </div>
-						<div class="row mb-3"> -->
+						<div class="row mb-3">
+								<label for="name" class="col-md-2 col-form-label">Name<span class="text-danger">*</span></label>
+								<div class="col-md-9" id="name">
+									<input type="text" class="form-control form-control-sm" oninput="validAssetTypename()"
+										placeholder="name" name="typeName" id="typeName" 
+										 value="${assetType.typeName}">
+									<form:errors path="typeName" cssClass="error" />
+									<span id="s1"></span><b><span class="formerror"> </span></b>
+								</div>
+							</div>
+						<div class="row mb-3">
 								<label for="parent_type" class="col-md-2 col-form-label">ParentType
 								</label>
 								<div class="col-md-9">
 									<form:select class="form-select  form-select-sm"
 										path="parentType">
-										<option selected disabled value="">select type</option>
+
+										<option value="${assetType.parentType}">${assetType.parentType}</option>
 										<c:forEach items="${parentTypeList}" var="assetTypeListObj">
 											<c:if test="${assetTypeListObj!=null}">
 												<form:option value="${assetTypeListObj}"
@@ -103,7 +110,7 @@
 							<hr>
 							<!-- Modal footer -->
 							<div class="model-footer">
-								<a href="../home/asset_type_view" class="btn btn-secondary "
+								<a href="../admin/asset_type_view" class="btn btn-secondary "
 									style="font-size: 1vw;">Close</a>
 
 								<button type="submit" class="btn btn-primary"
@@ -123,5 +130,57 @@
 			$("#edit-modal-content").modal('show');
 		});
 	</script>
+	<script>
+//---validation javascript code---------------name
+function validAssetTypename(){ 
+  let name = document.forms['assetType']["typeName"].value;
+if (name.search(/[0-9]/)>=0){
+  document.getElementById("s1").innerHTML="dont use numbers value";  
+}else if(name.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+    document.getElementById("s1").innerHTML="don't use symbolic character";
+}
+else{
+    document.getElementById("s1").innerHTML="";
+}
+}
+//-----------------
+function clearErr(){
+errors = document.getElementsByClassName('formerror');
+for(let item of errors)
+{
+    item.innerHTML = "";
+}
+} function seterr(id, error){
+element = document.getElementById(id);
+element.getElementsByClassName("formerror")[0].innerHTML = error;
+
+}
+function validForm(){
+clearErr();
+let name = document.forms['assetType']["typeName"].value;
+if (name.length == 0){
+    seterr("name", "** name cannot be empty!");
+    return false;
+}
+ if (name.length<2){
+    seterr("name", "*Name should have char between 2-10");
+    return false;
+}
+ if (name.length>10){
+	    seterr("name", "* name too long **Name should have char between 2-10");
+	    return false;
+	}
+ if (name.search(/[0-9]/)>=0){
+	 seterr("name", "*please enter string type name not enter number");
+	 return false;
+ }
+ if(name.search(/[!\@\#\$\%\^\&\*\(\)\_\=\+]/)>=0){
+	 seterr("name", "*name is not symbol");
+	 return false;
+ } else{
+		return true;
+	 }	
+}
+  </script>
 </body>
 </html>

@@ -13,22 +13,13 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
 @Data
+@NoArgsConstructor
 public class User {
-
-	public User(int i, String string, Set<UserRole> r) {
-		
-	}
-
-	public User(String string, String string2, boolean b, Set<UserRole> r) {
-		this.username=string;
-		this.password=string2;
-		this.enabled=b;
-		this.userRole=r;
-	}
 
 	@Id
 	@Column(name = "username")
@@ -43,5 +34,12 @@ public class User {
 	@OneToMany(fetch = FetchType.EAGER, cascade =  CascadeType.ALL)
 	@JoinTable(name = "user_and_role",joinColumns = @JoinColumn(name="username") ,inverseJoinColumns = @JoinColumn(name="userRoleId"))
 	private Set<UserRole> userRole;
+	
+	public User(String string, String string2, boolean b, Set<UserRole> r) {
+		this.username=string;
+		this.password=string2;
+		this.enabled=b;
+		this.userRole=r;
+	}
 
 }

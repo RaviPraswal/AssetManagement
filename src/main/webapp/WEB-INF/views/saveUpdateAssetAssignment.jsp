@@ -49,6 +49,9 @@
 .error {
 	color: #ff0000;
 }
+.formerror{
+color: red;
+}
 </style>
 </head>
 <body>
@@ -64,7 +67,7 @@
 				<!-- Modal body -->
 				<div class="modal-body">
 					<div class="container">
-						<form:form action="save_update_asset_assignment" method="post"
+						<form:form onsubmit="return validForm()" action="save_update_asset_assignment" method="post"
 							modelAttribute="assetAssignment">
 							<div class="row">
 								<div class="col-md-6">
@@ -80,8 +83,8 @@
 									</c:if>
 									<div class="row mb-1">
 										<label for="asset" class="col-md-4 col-form-label">Asset
-											:</label>
-										<div class="col-md-8">
+											<span class="text-danger">*</span></label>
+										<div class="col-md-8" id="Asset">
 											<form:select class="  form-select form-select-sm"
 												path="asset.id">
 												<option selected disabled value="" >Select Asset</option>
@@ -93,12 +96,13 @@
 												</c:forEach>
 											</form:select>
 											<form:errors path="${loadAssetObj.name}" cssClass="error" />
+											<span class="formerror"></span>
 										</div>
 									</div>
 									<div class="row mb-1">
 										<label for="employee" class="col-md-4 col-form-label">Employee
-											:</label>
-										<div class="col-md-8">
+											<span class="text-danger">*</span></label>
+										<div class="col-md-8" id="Emp">
 											<form:select class="form-select  form-select-sm"
 												path="employee.employeeId">
 												<option selected disabled value="" >Select Employee</option>
@@ -111,33 +115,35 @@
 											</form:select>
 											<form:errors path="${loadEmployeeObj.firstName}"
 												cssClass="error" />
+												<span class="formerror"></span>
 										</div>
 									</div>
 									<div class="row mb-1">
 										<label for="issueDate" class="col-md-4 col-form-label">Issue
-											Date :</label>
-										<div class="col-md-8">
+											Date <span class="text-danger">*</span></label>
+										<div class="col-md-8" id="issuedate">
 											<input type="date" class="form-control form-control-sm"
 												value="${assetAssignment.issueDate}" id="issueDate"
 												name="issueDate">
 											<form:errors path="issueDate" cssClass="error" />
+											<span class="formerror"></span>
 										</div>
 									</div>
 									<div class="row mb-1">
-										<label for="issueCondition" class="col-md-4 col-form-label">IssueCondition:</label>
-										<div class="col-md-8">
+										<label for="issueCondition" class="col-md-4 col-form-label">IssueCondition<span class="text-danger">*</span></label>
+										<div class="col-md-8" id="issueCon">
 											<select class="form-select  form-select-sm"
 												name="issueCondition" id="issueCondition">
 												<option value="${assetAssignment.issueCondition}">
 													${assetAssignment.issueCondition}</option>
-												<option value="right">right</option>
-												<option value="wrong">wrong</option>
+												<option value="Good">Good</option>
+												<option value="Damage">Damage</option>
 											</select>
 											<form:errors path="issueCondition" cssClass="error" />
+											<span class="formerror"></span>
 										</div>
 									</div>
 									<div class="row mb-1">
-
 										<label for="issueRemark" class="col-md-4 col-form-label">Issue
 											Remark :</label>
 										<div class="col-md-8">
@@ -147,16 +153,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-md-6">
-									<%-- <div class="row mb-1">
-										<label for="status" class="col-md-4 col-form-label">Status
-											:</label>
-										<div class="col-md-8">
-											<input type="text" class="form-control form-control-sm"
-												placeholder="enter status" id="status" name="status">
-											<form:errors path="status" cssClass="error" />
-										</div>
-									</div> --%>
+								<div class="col-md-6">														
 									<div class="row mb-1">
 										<label for="returnDate" class="col-md-4 col-form-label">Return
 											Date :</label>
@@ -174,8 +171,8 @@
 												<option selected disabled
 													value="${assetAssignment.returnCondition}">
 													${assetAssignment.returnCondition}</option>
-												<option value="right">right</option>
-												<option value="wrong">wrong</option>
+												<option value="Good">Good</option>
+												<option value="Damage">Damage</option>
 											</select>
 										</div>
 									</div>
@@ -193,7 +190,7 @@
 							<hr>
 
 							<div class="model-footer">
-								<a href="../home/asset_assignment_view"
+								<a href="../admin/asset_assignment_view"
 									class="btn btn-secondary " style="font-size: 1vw;">Close</a>
 								<button type="submit" class="btn btn-primary"
 									style="font-size: 1vw;">save</button>
@@ -211,6 +208,45 @@
 		$(document).ready(function() {
 			$("#open_update_asset_assignment_form").modal('show');
 		});
+	</script>
+	<script type="text/javascript">
+	//-----------------
+	function clearErr(){
+	errors = document.getElementsByClassName('formerror');
+	for(let item of errors)
+	{
+	    item.innerHTML = "";
+	}
+	} function seterr(id, error){
+	element = document.getElementById(id);
+	element.getElementsByClassName("formerror")[0].innerHTML = error;
+
+	}
+	function validForm(){
+		let asset = document.forms['assetAssignment']["asset.id"].value;
+		if (asset.length == 0){
+			seterr("Asset", "* This field cannot be empty!");
+			return false;
+		}
+		let employee = document.forms['assetAssignment']["employee.employeeId"].value;
+		if (employee.length == 0){
+			seterr("Emp", "* This field cannot be empty!");
+			return false;
+		}
+		let idate = document.forms['assetAssignment']["issueDate"].value;
+		if (idate.length == 0){
+		    seterr("issuedate", "*issue date cannot be empty!");
+		    return false;
+		}
+		let icon = document.forms['assetAssignment']["issueCondition"].value;
+		if (icon.length == 0){
+		    seterr("issueCon", "*issue condition cannot be empty!");
+		    return false;
+		}
+		else{
+			return true;
+		}
+	}
 	</script>
 </body>
 </html>

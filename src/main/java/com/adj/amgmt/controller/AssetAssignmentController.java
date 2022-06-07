@@ -34,28 +34,36 @@ public class AssetAssignmentController {
 
 	// controller to show asset_assignment page
 	@RequestMapping("/")
-	public ModelAndView assetAssignmentView() {
+	public ModelAndView listView() {
 		ModelAndView modelAndView = new ModelAndView();
-		List<AssetAssignmentDTO> assetAssignmentListDTO = assetAssignmentService.getAssetAssignmentList();
-		modelAndView.addObject("assetAssignmentList", assetAssignmentListDTO);
-		modelAndView.setViewName("assetAssignmentView");
+		try {
+			List<AssetAssignmentDTO> assetAssignmentListDTO = assetAssignmentService.getAssetAssignmentList();
+			modelAndView.addObject("assetAssignmentList", assetAssignmentListDTO);
+			modelAndView.setViewName("assetAssignmentView");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return modelAndView;
 	}
 
 	@RequestMapping(value = "/open_asset_assignemnt")
-	public ModelAndView openAssetAssignmentView() {
+	public ModelAndView saveView() {
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("assetAssignment", new AssetAssignmentDTO());
+		try {
+			modelAndView.addObject("assetAssignment", new AssetAssignmentDTO());
 
-		// loading assets
-		List<AssetDTO> loadAssetDTO = assetService.getAssetList();
-		modelAndView.addObject("loadAsset", loadAssetDTO);
+			// loading assets
+			List<AssetDTO> loadAssetDTO = assetService.getAssetList();
+			modelAndView.addObject("loadAsset", loadAssetDTO);
 
-		// loading employee
-		List<EmployeeDTO> loadEmployeeDTO = employeeService.getEmployeeList();
-		modelAndView.addObject("loadEmployee", loadEmployeeDTO);
+			// loading employee
+			List<EmployeeDTO> loadEmployeeDTO = employeeService.getEmployeeList();
+			modelAndView.addObject("loadEmployee", loadEmployeeDTO);
 
-		modelAndView.setViewName("saveUpdateAssetAssignment");
+			modelAndView.setViewName("saveUpdateAssetAssignment");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return modelAndView;
 	}
 
@@ -84,18 +92,10 @@ public class AssetAssignmentController {
 				}
 			}
 			assetAssignmentService.saveAssetAssignment(assetAssignmentDTO);
+			modelAndView.addObject("saved", "save/update");
 			modelAndView.setViewName("redirect:/asset_assignment/");
 		}
 
-		return modelAndView;
-	}
-
-	@RequestMapping("/delete_asset_assignment")
-	public ModelAndView deleteAssetAssignmentById(@RequestParam int id) {
-		ModelAndView modelAndView = new ModelAndView();
-		System.out.println(id / 0);
-		// assetAssignmentService.deleteAssetAssignmentById(id);
-		modelAndView.setViewName("redirect:/asset_assignment/");
 		return modelAndView;
 	}
 
@@ -112,6 +112,19 @@ public class AssetAssignmentController {
 		List<EmployeeDTO> loadEmployee = employeeService.getEmployeeList();
 		modelAndView.addObject("loadEmployee", loadEmployee);
 		modelAndView.setViewName("saveUpdateAssetAssignment");
+		return modelAndView;
+	}
+
+	@RequestMapping("/delete_asset_assignment")
+	public ModelAndView deleteById(@RequestParam int id) {
+		ModelAndView modelAndView = new ModelAndView();
+		try {
+			assetAssignmentService.deleteAssetAssignmentById(id);
+			modelAndView.addObject("deleted", "delete");
+			modelAndView.setViewName("redirect:/asset_assignment/");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return modelAndView;
 	}
 

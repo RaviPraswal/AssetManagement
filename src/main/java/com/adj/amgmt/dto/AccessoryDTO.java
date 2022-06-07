@@ -2,11 +2,6 @@ package com.adj.amgmt.dto;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -14,14 +9,7 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.adj.amgmt.entity.AccessoryTypes;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 
 @Data
 public class AccessoryDTO {
@@ -33,7 +21,7 @@ public class AccessoryDTO {
 	@NotBlank(message = "This Field is Required")
 	private String name;
 	
-	private AccessoryTypes accessoryType;
+	private AccessoryTypesDTO accessoryType;
 	
 	private String description;
 
@@ -56,5 +44,7 @@ public class AccessoryDTO {
 	
 	@NotNull(message = "Please choose a file")
 	private MultipartFile file;
+	
+	private String billFileName;
 	
 }

@@ -5,7 +5,7 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Home</title>
-<link href="../css/home.css" rel="stylesheet">
+<link href="/static/css/home.css" rel="stylesheet">
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
 	rel="stylesheet">
@@ -18,7 +18,7 @@
 </head>
 
 <body class="anti-flash-white linear-gradient-body"
-	style="background-image: url('../img/login.jpg'); background-repeat: no-repeat; background-size: cover; color: white;">
+	style="background-image: url('/static/img/login.jpg'); background-repeat: no-repeat; background-size: cover; color: white;">
 	<jsp:include page="navigation.jsp">
 		<jsp:param value="home" name="selectedNav" />
 	</jsp:include>
@@ -44,11 +44,11 @@
 					<div class="flip-container">
 						<div class="flipper">
 							<div clas="front">
-								<img src="../img/74.png">
+								<img src="/static/img/74.png">
 
 							</div>
 							<div class="back">
-								<img src="../img/pngegg.png">
+								<img src="/static/img/pngegg.png">
 							</div>
 
 						</div>
