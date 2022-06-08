@@ -18,9 +18,7 @@ import lombok.Setter;
 @Setter
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-//	@Autowired
-//	EmployeeRepositoryImpl employeeRepository;
-	
+
 	@Autowired
 	EmployeeRepository employeeRepository;
 
@@ -28,33 +26,54 @@ public class EmployeeServiceImpl implements EmployeeService {
 	ModelMapper modelMapper;
 
 	public void addEmployee(EmployeeDTO employeeDTO) {
-		Employee employee = modelMapper.map(employeeDTO, Employee.class);
-		employeeRepository.saveAndFlush(employee);
+		try {
+			Employee employee = modelMapper.map(employeeDTO, Employee.class);
+			employeeRepository.saveAndFlush(employee);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public List<EmployeeDTO> getEmployeeList() {
-		List<Employee> employeeList = employeeRepository.findAll();
-//		List<EmployeeDTO> employeeListDTO = Arrays.asList(modelMapper.map(employeeList, EmployeeDTO.class));
-		
-		List<EmployeeDTO> employeeListDTO = modelMapper.map(employeeList,
-				((TypeToken<List<EmployeeDTO>>) new TypeToken<List<EmployeeDTO>>() {
-				}).getType());
-		
-		return employeeListDTO;
+		try {
+			List<Employee> employeeList = employeeRepository.findAll();
+
+			List<EmployeeDTO> employeeListDTO = modelMapper.map(employeeList,
+					((TypeToken<List<EmployeeDTO>>) new TypeToken<List<EmployeeDTO>>() {
+					}).getType());
+
+			return employeeListDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	public void updateEmployee(Employee employee) {
-		employeeRepository.saveAndFlush(employee);
+		try {
+			employeeRepository.saveAndFlush(employee);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public void deleteEmployeeById(int id) {
-		employeeRepository.deleteById(id);
+		try {
+			employeeRepository.deleteById(id);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public EmployeeDTO getEmployeeById(int empId) {
-		Employee employee = employeeRepository.getById(empId);
-		EmployeeDTO employeeDTO = modelMapper.map(employee, EmployeeDTO.class);
-		return employeeDTO;
+		try {
+			Employee employee = employeeRepository.getById(empId);
+			EmployeeDTO employeeDTO = modelMapper.map(employee, EmployeeDTO.class);
+			return employeeDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 }

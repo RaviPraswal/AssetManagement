@@ -18,14 +18,10 @@ import lombok.Setter;
 @Service
 @Getter
 @Setter
-public class AccessoryTypesServiceImpl implements AccessoryTypeService{
+public class AccessoryTypesServiceImpl implements AccessoryTypeService {
 
 	@Autowired
 	AccessoryTypeRepository accessoryTypesRepository;
-	
-	/*
-	 * @Autowired AccessoryTypesRepositoryImpl accessoryTypesRepository;
-	 */
 
 	@Autowired
 	AccessoryService accessoryService;
@@ -34,50 +30,68 @@ public class AccessoryTypesServiceImpl implements AccessoryTypeService{
 	ModelMapper modelMapper;
 
 	public void saveAccessoryType(AccessoryTypesDTO accessoryTypeDTO) {
-		AccessoryTypes accessoryType = modelMapper.map(accessoryTypeDTO, AccessoryTypes.class);
-		accessoryTypesRepository.saveAndFlush(accessoryType);
+		try {
+			AccessoryTypes accessoryType = modelMapper.map(accessoryTypeDTO, AccessoryTypes.class);
+			accessoryTypesRepository.saveAndFlush(accessoryType);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public boolean deleteAccessoryTypeById(int id) {
 
-		List<AccessoryDTO> accessoryList = accessoryService.getAccessoryList();
-		boolean flag = false;
-		for (AccessoryDTO accessoryDTO : accessoryList) {
-			if (accessoryDTO.getAccessoryType().getId() == id) {
-				flag = true;// it means we have a mapping of accessory with accessory type
-				break;
-			} else {
-				flag = false;
+		try {
+			List<AccessoryDTO> accessoryList = accessoryService.getAccessoryList();
+			boolean flag = false;
+			for (AccessoryDTO accessoryDTO : accessoryList) {
+				if (accessoryDTO.getAccessoryType().getId() == id) {
+					flag = true;// it means we have a mapping of accessory with accessory type
+					break;
+				} else {
+					flag = false;
+				}
 			}
-		}
-		if (flag == false) {
-			accessoryTypesRepository.deleteById(id);
-			return true;
+			if (flag == false) {
+				accessoryTypesRepository.deleteById(id);
+				return true;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		return false;
 
 	}
 
 	public void updateAccessoryType(AccessoryTypes accessoryType) {
-		accessoryTypesRepository.saveAndFlush(accessoryType);
+		try {
+			accessoryTypesRepository.saveAndFlush(accessoryType);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 	}
 
 	public List<AccessoryTypesDTO> getAccessoryTypeList() {
-		List<AccessoryTypes> accessoryTypeList = accessoryTypesRepository.findAll();
-		// List<AccessoryTypesDTO> accessoryTypeListDTO =
-		// Arrays.asList(modelMapper.map(accessoryTypeList, AccessoryTypesDTO.class));
-
-		List<AccessoryTypesDTO> accessoryTypeListDTO = modelMapper.map(accessoryTypeList,
-				((TypeToken<List<AccessoryTypesDTO>>) new TypeToken<List<AccessoryTypesDTO>>() {
-				}).getType());
-
-		return accessoryTypeListDTO;
+		try {
+			List<AccessoryTypes> accessoryTypeList = accessoryTypesRepository.findAll();
+			List<AccessoryTypesDTO> accessoryTypeListDTO = modelMapper.map(accessoryTypeList,
+					((TypeToken<List<AccessoryTypesDTO>>) new TypeToken<List<AccessoryTypesDTO>>() {
+					}).getType());
+			return accessoryTypeListDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	public AccessoryTypesDTO getAccessoryTypeId(int accessoryTypeId) {
-		AccessoryTypes accessoryType = accessoryTypesRepository.getById(accessoryTypeId);
-		AccessoryTypesDTO accessoryTypeDTO = modelMapper.map(accessoryType, AccessoryTypesDTO.class);
-		return accessoryTypeDTO;
+		try {
+			AccessoryTypes accessoryType = accessoryTypesRepository.getById(accessoryTypeId);
+			AccessoryTypesDTO accessoryTypeDTO = modelMapper.map(accessoryType, AccessoryTypesDTO.class);
+			return accessoryTypeDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 }

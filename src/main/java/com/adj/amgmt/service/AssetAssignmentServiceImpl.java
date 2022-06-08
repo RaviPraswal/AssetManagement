@@ -19,10 +19,6 @@ import lombok.Setter;
 @Setter
 public class AssetAssignmentServiceImpl implements AssetAssignmentService {
 
-	/*
-	 * @Autowired AssetAssignmentRepositoryImpl assetAssignmentRepository;
-	 */
-	
 	@Autowired
 	AssetAssignmentRepository assetAssignmentRepository;
 
@@ -30,33 +26,53 @@ public class AssetAssignmentServiceImpl implements AssetAssignmentService {
 	ModelMapper modelMapper;
 
 	public List<AssetAssignmentDTO> getAssetAssignmentList() {
-		List<AssetAssignment> assetAssignmentList = assetAssignmentRepository.findAll();
+		try {
+			List<AssetAssignment> assetAssignmentList = assetAssignmentRepository.findAll();
+			List<AssetAssignmentDTO> assetAssignmentListDTO = modelMapper.map(assetAssignmentList,
+					((TypeToken<List<AssetAssignmentDTO>>) new TypeToken<List<AssetAssignmentDTO>>() {
+					}).getType());
 
-		//		List<AssetAssignmentDTO> assetAssignmentListDTO = Arrays.asList( modelMapper.map(assetAssignmentList, AssetAssignmentDTO.class));
-		List<AssetAssignmentDTO> assetAssignmentListDTO = modelMapper.map(assetAssignmentList,
-				((TypeToken<List<AssetAssignmentDTO>>) new TypeToken<List<AssetAssignmentDTO>>() {
-				}).getType());
-
-		return assetAssignmentListDTO;
+			return assetAssignmentListDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	public void saveAssetAssignment(AssetAssignmentDTO assetAssignmentDTO) {
-		AssetAssignment assetAssignment = modelMapper.map(assetAssignmentDTO, AssetAssignment.class);
-		assetAssignmentRepository.saveAndFlush(assetAssignment);
+		try {
+			AssetAssignment assetAssignment = modelMapper.map(assetAssignmentDTO, AssetAssignment.class);
+			assetAssignmentRepository.saveAndFlush(assetAssignment);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public void deleteAssetAssignmentById(int id) {
-		assetAssignmentRepository.deleteById(id);
+		try {
+			assetAssignmentRepository.deleteById(id);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public AssetAssignmentDTO getAssetAssignmentById(int assetAssignmentId) {
-		AssetAssignment assetAssignmentById = assetAssignmentRepository.getById(assetAssignmentId);
-		AssetAssignmentDTO assetAssignmentDTO = modelMapper.map(assetAssignmentById, AssetAssignmentDTO.class);
-		return assetAssignmentDTO;
+		try {
+			AssetAssignment assetAssignmentById = assetAssignmentRepository.getById(assetAssignmentId);
+			AssetAssignmentDTO assetAssignmentDTO = modelMapper.map(assetAssignmentById, AssetAssignmentDTO.class);
+			return assetAssignmentDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	public void updateAssetAssignment(AssetAssignment assetAssignment) {
-		assetAssignmentRepository.saveAndFlush(assetAssignment);
+		try {
+			assetAssignmentRepository.saveAndFlush(assetAssignment);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 }

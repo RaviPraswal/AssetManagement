@@ -26,7 +26,6 @@ import lombok.Setter;
 @Setter
 public class AssetsServiceImpl implements AssetService {
 
-
 	@Autowired
 	AssetRepository assetsRepository;
 
@@ -35,7 +34,7 @@ public class AssetsServiceImpl implements AssetService {
 
 	@Autowired
 	AssetAssignmentService assetAssignmentService;
-	
+
 	@Autowired
 	BillRepository billRepo;
 
@@ -45,17 +44,22 @@ public class AssetsServiceImpl implements AssetService {
 	// method to load all asset type from db to add asset page
 	// we have to load asset type using asset type repository
 	public List<AssetTypes> loadAssetTypes() {
-		return assetTypeRepository.findAll();
+		try {
+			return assetTypeRepository.findAll();
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 
 	}
 
 	// method to save an asset
 	public void save(AssetDTO assetDTO) {
 		Bill bill = new Bill();
-		String fileName="";
+		String fileName = "";
 		try {
 			Asset asset = modelMapper.map(assetDTO, Asset.class);
-			fileName=asset.getFile().getOriginalFilename();
+			fileName = asset.getFile().getOriginalFilename();
 			asset.setFileName(fileName);
 
 			bill.setFileName(fileName);
@@ -71,20 +75,24 @@ public class AssetsServiceImpl implements AssetService {
 
 	// method to delete an asset
 	public boolean deleteAssetById(int id) {
-		List<AssetAssignmentDTO> assetAssignmentList = assetAssignmentService.getAssetAssignmentList();
-		boolean f = false;
-		for (AssetAssignmentDTO assetAssignmentDTO : assetAssignmentList) {
-			AssetDTO asset = assetAssignmentDTO.getAsset();
-			if (asset.getId() == id) {
-				f = true;
-				break;
-			} else {
-				f = false;
+		try {
+			List<AssetAssignmentDTO> assetAssignmentList = assetAssignmentService.getAssetAssignmentList();
+			boolean f = false;
+			for (AssetAssignmentDTO assetAssignmentDTO : assetAssignmentList) {
+				AssetDTO asset = assetAssignmentDTO.getAsset();
+				if (asset.getId() == id) {
+					f = true;
+					break;
+				} else {
+					f = false;
+				}
 			}
-		}
-		if (f == false) {
-			assetsRepository.deleteById(id);
-			return true;
+			if (f == false) {
+				assetsRepository.deleteById(id);
+				return true;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		return false;
 
@@ -92,24 +100,38 @@ public class AssetsServiceImpl implements AssetService {
 
 	// method to update an asset
 	public void updateAsset(Asset asset) {
-		assetsRepository.saveAndFlush(asset);
+		try {
+			assetsRepository.saveAndFlush(asset);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 	}
 
 	// method to get asset list
 	public List<AssetDTO> getAssetList() {
-		List<Asset> assetList = assetsRepository.findAll();
-		List<AssetDTO> assetListDTO = Arrays.asList(modelMapper.map(assetList, AssetDTO[].class));
-		return assetListDTO;
+		try {
+			List<Asset> assetList = assetsRepository.findAll();
+			List<AssetDTO> assetListDTO = Arrays.asList(modelMapper.map(assetList, AssetDTO[].class));
+			return assetListDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 
 	}
 
 	// method to get an asset by id
 	public AssetDTO getAssetById(int assetId) {
-		Asset assetById = assetsRepository.getById(assetId);
-		AssetDTO assetDTO = modelMapper.map(assetById, AssetDTO.class);
-		assetDTO.setBillFileName(assetById.getFileName());
-		return assetDTO;
+		try {
+			Asset assetById = assetsRepository.getById(assetId);
+			AssetDTO assetDTO = modelMapper.map(assetById, AssetDTO.class);
+			assetDTO.setBillFileName(assetById.getFileName());
+			return assetDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 }

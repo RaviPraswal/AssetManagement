@@ -59,42 +59,60 @@ public class AccessoryServiceImpl implements AccessoryService {
 
 	public boolean deleteAccessoryBySkuId(int id) {
 
-		List<AccessoryIssueDTO> accessoryIssuesList = accessoryIssueService.getAccessoryIssuesList();
-		boolean flag = false;
-		for (AccessoryIssueDTO accessoryIssueDTO : accessoryIssuesList) {
-			AccessoryDTO accessory = accessoryIssueDTO.getAccessory();
-			if (accessory.getId() == id) {
-				flag = true;
-				break;
-			} else {
-				flag = false;
+		try {
+			List<AccessoryIssueDTO> accessoryIssuesList = accessoryIssueService.getAccessoryIssuesList();
+			boolean flag = false;
+			for (AccessoryIssueDTO accessoryIssueDTO : accessoryIssuesList) {
+				AccessoryDTO accessory = accessoryIssueDTO.getAccessory();
+				if (accessory.getId() == id) {
+					flag = true;
+					break;
+				} else {
+					flag = false;
+				}
 			}
-		}
-		if (flag == false) {
-			accessoryRepository.deleteById(id);
-			return true;
+			if (flag == false) {
+				accessoryRepository.deleteById(id);
+				return true;
+			}
+
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		return false;
-
 	}
 
 	public void updateAccessory(Accessory accessory) {
-		accessoryRepository.saveAndFlush(accessory);
+		try {
+			accessoryRepository.saveAndFlush(accessory);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 	}
 
 	public List<AccessoryDTO> getAccessoryList() {
-		List<Accessory> accessoryList = accessoryRepository.findAll();
-		List<AccessoryDTO> accessoryListDTO = Arrays.asList(modelMapper.map(accessoryList, AccessoryDTO[].class));
-		return accessoryListDTO;
+		try {
+			List<Accessory> accessoryList = accessoryRepository.findAll();
+			List<AccessoryDTO> accessoryListDTO = Arrays.asList(modelMapper.map(accessoryList, AccessoryDTO[].class));
+			return accessoryListDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	public AccessoryDTO getAccessoryById(int accessoryId) {
 
-		Accessory accessory = accessoryRepository.getById(accessoryId);
-		AccessoryDTO accessoryDTO = modelMapper.map(accessory, AccessoryDTO.class);
-		accessoryDTO.setBillFileName(accessory.getFileName());
-		return accessoryDTO;
+		try {
+			Accessory accessory = accessoryRepository.getById(accessoryId);
+			AccessoryDTO accessoryDTO = modelMapper.map(accessory, AccessoryDTO.class);
+			accessoryDTO.setBillFileName(accessory.getFileName());
+			return accessoryDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 }

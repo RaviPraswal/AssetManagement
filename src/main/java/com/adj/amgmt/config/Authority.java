@@ -1,4 +1,4 @@
-package com.adj.amgmt.service;
+package com.adj.amgmt.config;
 
 import org.springframework.security.core.GrantedAuthority;
 

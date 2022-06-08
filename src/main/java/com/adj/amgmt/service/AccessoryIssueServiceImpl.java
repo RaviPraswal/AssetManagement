@@ -34,12 +34,16 @@ public class AccessoryIssueServiceImpl implements AccessoryIssueService {
 
 	public List<AccessoryIssueDTO> getAccessoryIssuesList() {
 
-		List<AccessoryIssue> accessoryIssueList = accessoryIssueRepository.findAll();
-//		List<AccessoryIssueDTO> accessoryIssueListDTO = Arrays.asList(modelMapper.map(accessoryIssueList, AccessoryIssueDTO.class));
-		List<AccessoryIssueDTO> accessoryIssueListDTO = modelMapper.map(accessoryIssueList,
-				((TypeToken<List<AccessoryIssueDTO>>) new TypeToken<List<AccessoryIssueDTO>>() {
-				}).getType());
-		return accessoryIssueListDTO;
+		try {
+			List<AccessoryIssue> accessoryIssueList = accessoryIssueRepository.findAll();
+			List<AccessoryIssueDTO> accessoryIssueListDTO = modelMapper.map(accessoryIssueList,
+					((TypeToken<List<AccessoryIssueDTO>>) new TypeToken<List<AccessoryIssueDTO>>() {
+					}).getType());
+			return accessoryIssueListDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 	public boolean saveAccessoryIssue(AccessoryIssueDTO accessoryIssueDTO) {
@@ -65,19 +69,32 @@ public class AccessoryIssueServiceImpl implements AccessoryIssueService {
 	}
 
 	public void deleteAccessoryIssueById(int id) {
-		accessoryIssueRepository.deleteById(id);
-
+		try {
+			accessoryIssueRepository.deleteById(id);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public void updateAccessoryIssue(AccessoryIssue accessoryIssues) {
-		accessoryIssueRepository.saveAndFlush(accessoryIssues);
+		try {
+			accessoryIssueRepository.saveAndFlush(accessoryIssues);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 
 	}
 
 	public AccessoryIssueDTO getAccessoryIssueById(int accessoryIssueId) {
-		AccessoryIssue accessoryIssue = accessoryIssueRepository.getReferenceById(accessoryIssueId);
-		AccessoryIssueDTO accessoryIssueDTO = modelMapper.map(accessoryIssue, AccessoryIssueDTO.class);
-		return accessoryIssueDTO;
+		try {
+			AccessoryIssue accessoryIssue = accessoryIssueRepository.getReferenceById(accessoryIssueId);
+			AccessoryIssueDTO accessoryIssueDTO = modelMapper.map(accessoryIssue, AccessoryIssueDTO.class);
+			return accessoryIssueDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
+		
 	}
 
 }

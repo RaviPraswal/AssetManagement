@@ -13,7 +13,12 @@ public class BillServiceImpl implements BillService{
 	BillRepository billRepository;
 	
 	public Bill getByName(String billName) {
-		Bill findByfileName = billRepository.findByfileName(billName);
-		return findByfileName;
+		try {
+			Bill findByfileName = billRepository.findByfileName(billName);
+			return findByfileName;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 }

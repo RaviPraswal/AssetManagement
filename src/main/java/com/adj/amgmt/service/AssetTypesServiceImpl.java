@@ -20,10 +20,6 @@ import lombok.Setter;
 @Setter
 public class AssetTypesServiceImpl {
 
-	/*
-	 * @Autowired AssetTypesRepositoryImpl assetTypesRepository;
-	 */
-
 	@Autowired
 	AssetTypeRepository assetTypeRepository;
 
@@ -34,47 +30,69 @@ public class AssetTypesServiceImpl {
 	ModelMapper modelMapper;
 
 	public void saveAssetType(AssetTypeDTO assetTypeDTO) {
-		AssetTypes assetType = modelMapper.map(assetTypeDTO, AssetTypes.class);
-		assetTypeRepository.saveAndFlush(assetType);
+		try {
+			AssetTypes assetType = modelMapper.map(assetTypeDTO, AssetTypes.class);
+			assetTypeRepository.saveAndFlush(assetType);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public boolean deleteAssetTypeById(int id) {
 
-		List<AssetDTO> assetList = assetsService.getAssetList();
-		boolean flag = false;
-		for (AssetDTO assetDTO : assetList) {
-			if (assetDTO.getAssetType().getId() == id) {
-				flag = true;// it means we have a mapping of asset with asset type
-				break;
-			} else {
-				flag = false;
+		try {
+			List<AssetDTO> assetList = assetsService.getAssetList();
+			boolean flag = false;
+			for (AssetDTO assetDTO : assetList) {
+				if (assetDTO.getAssetType().getId() == id) {
+					flag = true;// it means we have a mapping of asset with asset type
+					break;
+				} else {
+					flag = false;
+				}
 			}
-		}
-		if (flag == false) {
-			assetTypeRepository.deleteById(id);
-			return true;
+			if (flag == false) {
+				assetTypeRepository.deleteById(id);
+				return true;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
 		}
 		return false;
 	}
 
 	public AssetTypeDTO getAssetTypeById(int assetType) {
-		AssetTypes assetTypeById = assetTypeRepository.getById(assetType);
-		AssetTypeDTO assetTypeDTO = modelMapper.map(assetTypeById, AssetTypeDTO.class);
-		return assetTypeDTO;
+		try {
+			AssetTypes assetTypeById = assetTypeRepository.getById(assetType);
+			AssetTypeDTO assetTypeDTO = modelMapper.map(assetTypeById, AssetTypeDTO.class);
+			return assetTypeDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 
 	}
 
 	public void updateAssetType(AssetTypes assetType) {
-		assetTypeRepository.saveAndFlush(assetType);
+		try {
+			assetTypeRepository.saveAndFlush(assetType);
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
 	}
 
 	public List<AssetTypeDTO> getAssetTypeList() {
-		List<AssetTypes> assetTypeList = assetTypeRepository.findAll();
-		List<AssetTypeDTO> assetTypeListDTO = modelMapper.map(assetTypeList,
-				((TypeToken<List<AssetTypeDTO>>) new TypeToken<List<AssetTypeDTO>>() {
-				}).getType());
+		try {
+			List<AssetTypes> assetTypeList = assetTypeRepository.findAll();
+			List<AssetTypeDTO> assetTypeListDTO = modelMapper.map(assetTypeList,
+					((TypeToken<List<AssetTypeDTO>>) new TypeToken<List<AssetTypeDTO>>() {
+					}).getType());
 
-		return assetTypeListDTO;
+			return assetTypeListDTO;
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		return null;
 	}
 
 }
