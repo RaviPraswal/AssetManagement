@@ -1,3 +1,20 @@
+//Please enter the following data into the specified tables
+INSERT INTO users(username,password,enabled)
+VALUES ('root','12', true);
+INSERT INTO users(username,password,enabled)
+VALUES ('ravi','12', true);
+
+INSERT INTO user_roles (user_role_id, name)
+VALUES (1, 'ROLE_USER');
+INSERT INTO user_roles (user_role_id, name)
+VALUES (2, 'ROLE_ADMIN');
+
+INSERT INTO user_and_role (username, user_role_id)
+VALUES ('root', 1);
+INSERT INTO user_and_role (username, user_role_id)
+VALUES ('root', 2);
+
+
 Ravi@LAPTOP-E3KGAKJP MINGW64 ~/Documents/workspace-spring-tool-suite-4-4.14.1.RELEASE/asset-management3.0/target
 $ git status
 fatal: not a git repository (or any of the parent directories): .git
